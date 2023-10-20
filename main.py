@@ -71,7 +71,7 @@ def main(page: ft.Page) -> None:
 
         # ignore plz python cant ref
         def send_button_click(e: ControlEvent) -> None:
-            message_info = tf_messageHost.value
+            message_info = f'[{tf_nickname.value}]:   {tf_messageHost.value}'
             send_message(message_info)
             
         # HOST PAGE/VIEW
@@ -109,13 +109,13 @@ def main(page: ft.Page) -> None:
         def send_message(message: str) -> None:
             nonlocal host_msg_stat
             if not host_msg_stat:
-                lv_chat.controls.append(ft.Text(value=f'{tf_nickname.value}: {message}'))
+                lv_chat.controls.append(ft.Text(value=f'{message}'))
                 client_socket.send(message.encode())
                 tf_messageHost.value = ''
                 host_msg_stat = True
                 page.update()
             host_msg_stat = False
-        
+    
 
 
         while True:
@@ -123,10 +123,8 @@ def main(page: ft.Page) -> None:
             if not data:
                 break
             print(f'Received from client: {data.decode()}')
-            lv_chat.controls.append(ft.Text(value=f'User: {data}'))
+            lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
             page.update()
-
-
             if data.decode() == 'close':
                 break
         client_socket.close()
@@ -142,7 +140,7 @@ def main(page: ft.Page) -> None:
 
        # ignore plz python cant ref
         def send_button_click(e: ControlEvent) -> None:
-            message_info = tf_messageClient.value
+            message_info = f'[{tf_nickname.value}]:   {tf_messageClient.value}'
             send_message(message_info)
             
         # HOST PAGE/VIEW
@@ -172,13 +170,13 @@ def main(page: ft.Page) -> None:
             )
         )
         btn_ClientSend.disabled = False
-        print(f'Connected by {host}')
+        print(f'Connected to {host}')
 
         client_msg_stat = False
         def send_message(message: str) -> None:
             nonlocal client_msg_stat
             if not client_msg_stat:
-                lv_chat.controls.append(ft.Text(value=f'{tf_nickname.value}: {message}'))
+                lv_chat.controls.append(ft.Text(value=f'{message}'))
                 client_socket.send(message.encode())
                 tf_messageClient.value = ''
                 client_msg_stat = True
@@ -192,7 +190,7 @@ def main(page: ft.Page) -> None:
             if not data:
                 break
             print(f'Received from client: {data.decode()}')
-            lv_chat.controls.append(ft.Text(value=f'User: {data}'))
+            lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
             page.update()
 
 
@@ -230,5 +228,3 @@ def main(page: ft.Page) -> None:
 
 if __name__ == '__main__':
     ft.app(main)
-
-
