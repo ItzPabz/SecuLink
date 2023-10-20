@@ -13,5 +13,5 @@ VaultTalk is a secure and user-friendly encrypted messaging application develope
 
 ### Prerequisites
 
-- Python 3.x
-- Dependencies listed in `requirements.txt`
+- Python 3.12
+- Flet 
