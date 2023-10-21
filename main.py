@@ -100,10 +100,11 @@ def main(page: ft.Page) -> None:
                 alignment=ft.MainAxisAlignment.CENTER
             )
         )
-        print("Waiting for connection...")
         client_socket, addr = server_socket.accept()
         btn_HostSend.disabled = False
-        print(f'Connected by {addr}')
+        tx_HostTitle.value = f'VaultTalk • Connected'
+        page.update()
+
 
         host_msg_stat = False
         def send_message(message: str) -> None:
