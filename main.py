@@ -4,6 +4,7 @@ from flet import *
 import socket
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization
+import keyboard
         
 
 def main(page: ft.Page) -> None:
@@ -14,6 +15,7 @@ def main(page: ft.Page) -> None:
     page.window_width = 450
     page.window_height = 600
     page.theme = ft.Theme(color_scheme_seed=ft.colors.DEEP_PURPLE)
+    page.dark_theme
 
     # INITIAL PAGE
     tx_Header: Text = Text(value='VaultTalk', size=34, width=300, text_align=ft.TextAlign.CENTER)
@@ -73,6 +75,9 @@ def main(page: ft.Page) -> None:
         def send_button_click(e: ControlEvent) -> None:
             message_info = f'[{tf_nickname.value}]:   {tf_messageHost.value}'
             send_message(message_info)
+            tf_messageHost.focus()
+        
+        keyboard.on_press_key('enter', send_button_click)
             
         # HOST PAGE/VIEW
         tx_HostTitle: Text = Text(value=f'VaultTalk • Host', size=24, width=300, text_align=ft.TextAlign.CENTER)
@@ -129,6 +134,9 @@ def main(page: ft.Page) -> None:
             if data.decode() == 'close':
                 break
         client_socket.close()
+        lv_chat.controls.append(ft.Text(value=f'####### USER HAS DISCONNECTED #######'))
+        page.update()
+
     
 
 
@@ -143,7 +151,10 @@ def main(page: ft.Page) -> None:
         def send_button_click(e: ControlEvent) -> None:
             message_info = f'[{tf_nickname.value}]:   {tf_messageClient.value}'
             send_message(message_info)
-            
+            tf_messageClient.focus()
+
+        keyboard.on_press_key('enter', send_button_click)
+
         # HOST PAGE/VIEW
         tx_HostTitle: Text = Text(value=f'VaultTalk • Client', size=24, width=300, text_align=ft.TextAlign.CENTER)
         lv_chat: ListView = ListView(expand=1, spacing=5, padding=10, auto_scroll=True)
@@ -198,6 +209,9 @@ def main(page: ft.Page) -> None:
             if data.decode() == 'close':
                 break
         client_socket.close()
+        lv_chat.controls.append(ft.Text(value=f'####### USER HAS DISCONNECTED #######'))
+        page.update()
+
         
 
 
