@@ -6,7 +6,6 @@ from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import serialization, hashes
 import keyboard
         
-
 # Main fucntion, contains whole application
 def main(page: ft.Page) -> None:
     #Default Page Settings
@@ -210,7 +209,6 @@ def main(page: ft.Page) -> None:
                 break
         client_socket.close()
 
-
     # Connect to a host and load the client page
     def connect(e: ControlEvent) -> None:
         # Socket Information
@@ -269,7 +267,6 @@ def main(page: ft.Page) -> None:
                 send_message(message_info.encode())
                 tf_messageClient.focus()
         keyboard.on_press_key('enter', send_button_click)
-
 
         # Chat View/Layout
         tx_HostTitle: Text = Text(value=f'VaultTalk • Client', size=24, width=300, text_align=ft.TextAlign.CENTER)
@@ -347,7 +344,6 @@ def main(page: ft.Page) -> None:
                 page.update()
                 break
         client_socket.close()
-
 
     # Link Functions to UI Elements
     tf_nickname.on_change = validateFields
