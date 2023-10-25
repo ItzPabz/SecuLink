@@ -166,38 +166,48 @@ def main(page: ft.Page) -> None:
 
         # Recieves messages from the client and displays them in the chat
         while True:
-            data = client_socket.recv(1024)
-            if not data:
-                break
-            if data == firstmsg_key:
-                # Prevents the first message (Public Key) from being displayed in the chat itself.
-                continue
-            if sw_EncryptMsg.value == False:
-                # Checks encryption switch and displays message accordingly
-                try:
-                    lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
-                    page.update()
-                except UnicodeDecodeError:
-                    lv_chat.controls.append(ft.Text(value=f'{data}'))
-                    page.update()
-            else:
-                # Decrypts message and displays it in the chat
-                try:
-                    self_private_key = serialization.load_pem_private_key(host_private_key_pem, password=None)
-                    decrypted_msg = self_private_key.decrypt(
-                        data,
-                        padding.OAEP(
-                            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                            algorithm=hashes.SHA256(),
-                            label=None
+            try:
+                data = client_socket.recv(1024)
+                if not data:
+                    break
+                if data == firstmsg_key:
+                    # Prevents the first message (Public Key) from being displayed in the chat itself.
+                    continue
+                if sw_EncryptMsg.value == False:
+                    # Checks encryption switch and displays message accordingly
+                    try:
+                        lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
+                        page.update()
+                    except UnicodeDecodeError:
+                        lv_chat.controls.append(ft.Text(value=f'{data}'))
+                        page.update()
+                else:
+                    # Decrypts message and displays it in the chat
+                    try:
+                        self_private_key = serialization.load_pem_private_key(host_private_key_pem, password=None)
+                        decrypted_msg = self_private_key.decrypt(
+                            data,
+                            padding.OAEP(
+                                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                                algorithm=hashes.SHA256(),
+                                label=None
+                            )
                         )
-                    )
-                    lv_chat.controls.append(ft.Text(value=f'{decrypted_msg.decode()}'))
-                    page.update()
-                except ValueError:
-                    # Handles errors (Used for when a an unencrypted message is sent to encrypted chat)
-                    lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
-                    page.update()
+                        lv_chat.controls.append(ft.Text(value=f'{decrypted_msg.decode()}'))
+                        page.update()
+                    except ValueError:
+                        # Handles errors (Used for when a an unencrypted message is sent to encrypted chat)
+                        lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
+                        page.update()
+            except ConnectionResetError:
+                #Ends chat when host disconnects
+                lv_chat.controls.append(ft.Text(value=f'##### CHAT ENDED #####'))
+                btn_HostSend.disabled = True
+                sw_EncryptMsg.disabled = True
+                tf_messageHost.disabled = True
+                tx_HostTitle.value = 'VaultTalk • Disconnected'
+                page.update()
+                break
         client_socket.close()
 
 
@@ -295,37 +305,47 @@ def main(page: ft.Page) -> None:
 
         # Recieves messages from the host and displays them in the chat
         while True:
-            data = client_socket.recv(1024)
-            if not data:
-                break
-            if data == firstmsg_key:
-                continue
-            if sw_EncryptMsg.value == False:
-                try:
-                    lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
-                    
-                    page.update()
-                except UnicodeDecodeError:
-                    lv_chat.controls.append(ft.Text(value=f'{data}'))
-                    page.update()
-            else:
-                try:
-                    self_private_key = serialization.load_pem_private_key(client_private_key_pem, password=None)
-                    decrypted_msg = self_private_key.decrypt(
-                        data,
-                        padding.OAEP(
-                            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                            algorithm=hashes.SHA256(),
-                            label=None
+            try:
+                data = client_socket.recv(1024)
+                if not data:
+                    break
+                if data == firstmsg_key:
+                    continue
+                if sw_EncryptMsg.value == False:
+                    try:
+                        lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
+                        
+                        page.update()
+                    except UnicodeDecodeError:
+                        lv_chat.controls.append(ft.Text(value=f'{data}'))
+                        page.update()
+                else:
+                    try:
+                        self_private_key = serialization.load_pem_private_key(client_private_key_pem, password=None)
+                        decrypted_msg = self_private_key.decrypt(
+                            data,
+                            padding.OAEP(
+                                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                                algorithm=hashes.SHA256(),
+                                label=None
+                            )
                         )
-                    )
-                    lv_chat.controls.append(ft.Text(value=f'{decrypted_msg.decode()}'))
-                    
-                    page.update()
-                except ValueError:
-                    lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
-                    
-                    page.update()
+                        lv_chat.controls.append(ft.Text(value=f'{decrypted_msg.decode()}'))
+                        
+                        page.update()
+                    except ValueError:
+                        lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
+                        
+                        page.update()
+            except ConnectionResetError:
+                #Ends chat when host disconnects
+                lv_chat.controls.append(ft.Text(value=f'##### CHAT ENDED #####'))
+                btn_ClientSend.disabled = True
+                tf_messageClient.disabled = True
+                sw_EncryptMsg.disabled = True
+                tx_HostTitle.value = 'VaultTalk • Disconnected'
+                page.update()
+                break
         client_socket.close()
 
 
