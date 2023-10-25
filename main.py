@@ -102,7 +102,6 @@ def main(page: ft.Page) -> None:
                         tf_messageHost.value = ''
                         client_msg_stat = True
                         page.update()
-                        print(encrypted_msg)
                     except ValueError:
                         # Handle invalid public key format
                         print('Invalid public key format')
@@ -180,7 +179,8 @@ def main(page: ft.Page) -> None:
                     lv_chat.controls.append(ft.Text(value=f'{decrypted_msg.decode()}'))
                     page.update()
                 except ValueError:
-                    print('Invalid private key format')
+                    lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
+                    page.update()
         client_socket.close()
 
 
@@ -224,7 +224,6 @@ def main(page: ft.Page) -> None:
                         tf_messageClient.value = ''
                         client_msg_stat = True
                         page.update()
-                        print(encrypted_msg)
                     except ValueError:
                         # Handle invalid public key format
                         print('Invalid public key format')
@@ -298,7 +297,8 @@ def main(page: ft.Page) -> None:
                     lv_chat.controls.append(ft.Text(value=f'{decrypted_msg.decode()}'))
                     page.update()
                 except ValueError:
-                    print('Invalid private key format')
+                    lv_chat.controls.append(ft.Text(value=f'{data.decode()}'))
+                    page.update()
         client_socket.close()
 
 
